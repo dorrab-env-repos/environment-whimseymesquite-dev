@@ -1,40 +1,105 @@
 autoUpdate:
   enabled: true
-  schedule: '0 0 * * *'
+  schedule: 0 0 * * *
+bootConfigURL: https://github.com/cloudbees/arcalos-boot-config.git
 cluster:
-  clusterName: ""
-  environmentGitOwner: ""
-  project: ""
+  azure: {}
+  chartRepository: http://bucketrepo/bucketrepo/charts/
+  clusterName: whimseymesquite
+  environmentGitOwner: dorrab-env-repos
+  environmentGitPublic: true
+  externalDNSSAName: whimseymesquite-dn
+  gitKind: github
+  gitName: github
+  gitPublic: true
+  gitServer: https://github.com
+  gke:
+    projectNumber: "688742717928"
+  kanikoSAName: whimseymesquite-ko
+  namespace: jx
+  project: cbjx-whimseymesquite
   provider: gke
-  zone: ""
-gitops: true
-githubApp:
-  enabled: false
-  url: ""
-  schedule: '0 0 * * *'
+  registry: gcr.io
+  vaultName: whimseymesquite
+  vaultSAName: whimseymesquite-vt
+  zone: us-central1-c
 environments:
-- key: dev
-- key: staging
-- key: production
+- ingress:
+    cloud_dns_secret_name: external-dns-gcp-sa
+    domain: cbjx-whimseymesquite.play-jxaas.live
+    domainIssuerURL: https://jx-tenant-service-jx.aps-raccoonshimmer.play-jxaas.live
+    externalDNS: true
+    namespaceSubDomain: -jx.
+    tls:
+      email: jenkins-x@cloudbees.com
+      enabled: true
+      production: true
+  key: dev
+  repository: environment-whimseymesquite-dev
+- ingress:
+    domain: ""
+    externalDNS: false
+    namespaceSubDomain: ""
+    tls:
+      email: ""
+      enabled: false
+      production: false
+  key: staging
+  repository: environment-whimseymesquite-staging
+- ingress:
+    domain: ""
+    externalDNS: false
+    namespaceSubDomain: ""
+    tls:
+      email: ""
+      enabled: false
+      production: false
+  key: production
+  repository: environment-whimseymesquite-production
+githubApp:
+  enabled: true
+  schedule: 0 0 * * *
+  url: https://lighthouse-githubapp-jx.aps-raccoonshimmer.play-jxaas.live
+gitops: true
 ingress:
-  domain: ""
+  cloud_dns_secret_name: external-dns-gcp-sa
+  domain: cbjx-whimseymesquite.play-jxaas.live
+  domainIssuerURL: https://jx-tenant-service-jx.aps-raccoonshimmer.play-jxaas.live
   externalDNS: true
+  namespaceSubDomain: -jx.
   tls:
     email: jenkins-x@cloudbees.com
     enabled: true
-    production: false
+    production: true
 kaniko: true
+repository: bucketrepo
 secretStorage: vault
 storage:
+  backup:
+    enabled: true
+    url: gs://cbjx-whimseymesquite-backup
   logs:
-    enabled: false
-    url: ""
+    enabled: true
+    url: gs://cbjx-whimseymesquite-lts
   reports:
     enabled: false
     url: ""
   repository:
-    enabled: false
-    url: ""
+    enabled: true
+    url: gs://cbjx-whimseymesquite-repository
+vault:
+  aws: {}
+  bucket: cbjx-whimseymesquite-vault
+  key: whimseymesquite-crypto-key
+  keyring: whimseymesquite-keyring
+  name: whimseymesquite
+  serviceAccount: whimseymesquite-vt
 velero:
   namespace: velero
-webhook: prow
+  schedule: ""
+  serviceAccount: whimseymesquite-vo
+  ttl: ""
+versionStream:
+  ref: v0.0.325
+  url: https://github.com/cloudbees/arcalos-jenkins-x-versions.git
+webhook: lighthouse
